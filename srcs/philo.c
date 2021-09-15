@@ -6,7 +6,7 @@
 /*   By: sjacki <sjacki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/15 18:40:59 by sjacki            #+#    #+#             */
-/*   Updated: 2021/09/15 21:30:39 by sjacki           ###   ########.fr       */
+/*   Updated: 2021/09/15 23:01:42 by sjacki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,4 +21,5 @@ int		main(int argc, char **argv)
 		return (ft_error("Error: wrong number of arguments\n"));
 	if (init_struct(argc, argv, &arg))
 		return (1);
+	
 }

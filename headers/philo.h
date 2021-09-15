@@ -6,7 +6,7 @@
 /*   By: sjacki <sjacki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/15 18:40:07 by sjacki            #+#    #+#             */
-/*   Updated: 2021/09/15 21:30:44 by sjacki           ###   ########.fr       */
+/*   Updated: 2021/09/15 23:00:49 by sjacki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,11 @@ typedef struct	s_argv
 	useconds_t		time_to_eat;
 	useconds_t		time_to_sleep;
 }				t_argv;
+
+typedef struct	s_philo
+{
+	
+}				t_philo;
 
 int		init_struct(int argc, char **argv, t_argv *arg);
 int		ft_atoi(const char *str);
