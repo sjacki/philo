@@ -6,11 +6,11 @@
 #    By: sjacki <sjacki@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/09/15 18:38:45 by sjacki            #+#    #+#              #
-#    Updated: 2021/09/28 22:10:38 by sjacki           ###   ########.fr        #
+#    Updated: 2021/10/11 22:17:51 by sjacki           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = philo
+NAME = philo_one
 
 C_FILES			=		srcs/philo.c	srcs/utils.c	srcs/ft_atoi.c	srcs/init_struct.c \
 						srcs/launch.c
@@ -42,4 +42,4 @@ re: fclean all
 
 run: all
 	clear
-	./$(NAME) 5 60 60 60
+	./$(NAME) 4 310 200 100
