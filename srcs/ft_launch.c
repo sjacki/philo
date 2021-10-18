@@ -1,25 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   launch.c                                           :+:      :+:    :+:   */
+/*   ft_launch.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sjacki <sjacki@student.42.fr>              +#+  +:+       +#+        */
+/*   By: alexandr <alexandr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/16 18:50:13 by sjacki            #+#    #+#             */
-/*   Updated: 2021/10/11 22:05:45 by sjacki           ###   ########.fr       */
+/*   Updated: 2021/10/18 14:01:45 by alexandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/philo.h"
-
-void	ph_send(t_argv *arg, int philo_id, char *str)
-{
-	pthread_mutex_lock(&(arg->write));
-	if (!(arg->die))
-		printf("%lli %d %s\n", get_time() - arg->f_time, philo_id, str);
-	pthread_mutex_unlock(&(arg->write));
-	return ;
-}
 
 void	close_lanch(t_argv *arg, t_philo *philo)
 {
@@ -43,7 +34,7 @@ void	dead_check(t_argv *arg, t_philo *philo)
 		x = -1;
 		while (++x < arg->number_of_philosophers && !arg->die)
 		{
-			if ((get_time() - philo[x].time_last_eat) >= arg->time_to_die)
+			if ((get_time() - philo[x].time_last_eat) > arg->time_to_die)
 			{
 				ph_send(arg, x, "is died");
 				arg->die++;
@@ -52,45 +43,14 @@ void	dead_check(t_argv *arg, t_philo *philo)
 		if (arg->die)
 			break ;
 		x = 0;
-		while (arg->number_of_times_each_philosopher_must_eat != -1 && x < arg->number_of_philosophers &&
-				philo[x].count_ate >= arg->number_of_times_each_philosopher_must_eat)
+		while (arg->number_of_times_each_philosopher_must_eat != -1 &&
+				x < arg->number_of_philosophers &&
+				philo[x].count_ate >=
+				arg->number_of_times_each_philosopher_must_eat)
 			x++;
 		if (x == arg->number_of_philosophers)
 			arg->must_eat++;
 	}
-}
-
-void	cast_sleep(t_argv *arg, long long time)
-{
-	long long x;
-
-	x = get_time();
-	while (!arg->die)
-	{
-		if ((get_time() - x) >= time)
-			break ;
-		usleep(10);
-	}
-}
-
-void	ph_eat(t_philo *philo)
-{
-	t_argv		*arg;
-
-	arg = (t_argv*)philo->arg;
-
-	pthread_mutex_lock(&(arg->fork[philo->l_fork]));
-	ph_send(arg, philo->id, "has taken a fork");
-	pthread_mutex_lock(&(arg->fork[philo->r_fork]));
-	ph_send(arg, philo->id, "has taken a fork");
-	ph_send(arg, philo->id, "is eating");
-	cast_sleep(arg, arg->time_to_eat);
-	philo->time_last_eat = get_time();
-	philo->count_ate++;
-	pthread_mutex_unlock(&(arg->fork[philo->l_fork]));
-	pthread_mutex_unlock(&(arg->fork[philo->r_fork]));
-	ph_send(arg, philo->id, "is sleeping");
-	cast_sleep(arg, arg->time_to_sleep);
 }
 
 void	*thread(void *void_philo)
@@ -106,6 +66,8 @@ void	*thread(void *void_philo)
 		cast_sleep(arg, 50);
 	while (!arg->die)
 	{
+		if (arg->die)
+			break ;
 		ph_eat(philo);
 		if (arg->must_eat)
 			break ;
@@ -115,30 +77,20 @@ void	*thread(void *void_philo)
 	return (NULL);
 }
 
-void	init_pfilo(t_philo *philo, t_argv *arg)
+int		start_launch_philo(t_argv *arg, t_philo *philo)
 {
-	int i;
+	int			i;
 
 	i = 0;
-
 	while (i < arg->number_of_philosophers)
 	{
-		philo[i].id = i + 1;
-		philo[i].arg = (struct t_argv*)arg;
-		philo[i].count_ate = 0;
-		philo[i].time_last_eat = 0;
-		if (philo[i].id == arg->number_of_philosophers)
-		{
-			philo[i].l_fork = philo[i].id - 1;
-			philo[i].r_fork = 0; 
-		}
-		else
-		{
-			philo[i].l_fork = philo[i].id - 1;
-			philo[i].r_fork = philo[i].id; 
-		}
+		philo[i].time_last_eat = get_time();
+		if (pthread_create(&(philo[i].thr_id), NULL, thread, &(philo[i])))
+			return (ft_error("failed to create thread"));
 		i++;
 	}
+	dead_check(arg, philo);
+	close_lanch(arg, philo);
 }
 
 int		launch_philo(t_argv *arg)
@@ -149,8 +101,8 @@ int		launch_philo(t_argv *arg)
 	philo = arg->philo;
 	i = 0;
 	if (!(philo = (t_philo*)malloc(sizeof(t_philo) *
-	 	arg->number_of_philosophers))
-	 	|| !(arg->fork = (pthread_mutex_t*)malloc(sizeof(pthread_mutex_t)
+			arg->number_of_philosophers))
+			|| !(arg->fork = (pthread_mutex_t*)malloc(sizeof(pthread_mutex_t)
 		* arg->number_of_philosophers)))
 		return (ft_error("memory allocation error"));
 	while (i < arg->number_of_philosophers)
@@ -166,14 +118,6 @@ int		launch_philo(t_argv *arg)
 	i = 0;
 	arg->f_time = get_time();
 	init_pfilo(philo, arg);
-	while (i < arg->number_of_philosophers)
-	{
-		philo[i].time_last_eat = get_time();
-		if (pthread_create(&(philo[i].thr_id), NULL, thread, &(philo[i])))
-			return (ft_error("failed to create thread"));
-		i++;
-	}
-	dead_check(arg, philo);
-	close_lanch(arg, philo);
+	start_launch_philo(arg, philo);
 	return (0);
 }

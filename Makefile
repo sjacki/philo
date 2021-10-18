@@ -3,17 +3,17 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: sjacki <sjacki@student.42.fr>              +#+  +:+       +#+         #
+#    By: alexandr <alexandr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/09/15 18:38:45 by sjacki            #+#    #+#              #
-#    Updated: 2021/10/11 22:17:51 by sjacki           ###   ########.fr        #
+#    Updated: 2021/10/15 07:42:08 by alexandr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = philo_one
+NAME = philo
 
-C_FILES			=		srcs/philo.c	srcs/utils.c	srcs/ft_atoi.c	srcs/init_struct.c \
-						srcs/launch.c
+C_FILES			=		srcs/ft_philo.c		srcs/ft_utils.c		srcs/ft_atoi.c		srcs/ft_init_struct.c \
+						srcs/ft_launch.c
 						
 
 O_FILES = $(C_FILES:.c=.o)
@@ -42,4 +42,4 @@ re: fclean all
 
 run: all
 	clear
-	./$(NAME) 4 310 200 100
+	./$(NAME) 2 120 60 60

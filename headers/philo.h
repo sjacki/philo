@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sjacki <sjacki@student.42.fr>              +#+  +:+       +#+        */
+/*   By: alexandr <alexandr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/15 18:40:07 by sjacki            #+#    #+#             */
-/*   Updated: 2021/10/11 21:25:58 by sjacki           ###   ########.fr       */
+/*   Updated: 2021/10/15 08:44:40 by alexandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,15 @@ typedef struct	s_argv
 }				t_argv;
 
 int			init_struct(int argc, char **argv, t_argv *arg);
+void		init_pfilo(t_philo *philo, t_argv *arg);
 int			launch_philo(t_argv *arg);
 int			ft_atoi(const char *str);
 long long	get_time(void);
 int			ft_putstr(char *str);
 int			ft_strlen(char *str);
 int			ft_error(char *str);
-
+void		ph_send(t_argv *arg, int philo_id, char *str);
+void		cast_sleep(t_argv *arg, long long time);
+void		ph_eat(t_philo *philo);
 
 #endif
